@@ -16,13 +16,11 @@ app.use(bodyParser.json());
 app.use(express.static("./public"));
 
 //Routes
-require("./")
+require("./routes/html-routes")(app);
+require("./routes/burger-api-routes")(app);
 
-// Import routes and give the server access to them.
-var router = require("./controllers/controller");
-
-app.use(router);
-
-app.listen(PORT, function() {
-  console.log("App now listening at localhost:" + PORT);
+db.sequelize.sync({ force: true }).then(function() {
+  app.listen(PORT, function() {
+    console.log("App listening on PORT " + PORT);
+  });
 });
