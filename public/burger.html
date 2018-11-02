@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Eat Da Burger!</title>
+  <script src="https://code.jquery.com/jquery.js"></script>
+  <link rel="stylesheet" href="../../public/assets/css/style.css">
+</head>
+<body>
+
+<div class="mainHeader"></div>
+  <h1>Eat Da Burger</h1>
+  <img src="../public/assets/img/10610529.jpg" alt="picture of burger">
+
+  <div id="addBurgerDiv">
+    <h3>Add a Burger!</h3>
+      <form class="text-left add-burger">
+          <div class="form-group">
+              <label for="new-burger">Burger Name:</label>
+              <input type="text" class="form-control" id="new-burger">
+          </div>
+          <button type="submit" class="btn btn-success">Add Burger!</button>
+      </form>
+  </div>
+</div>
+<br><br><br><br> 
+
+<div id="freshBurgersDiv">
+  <h3>Fresh Burgers!</h3>
+    <ul>
+      {{#each burgers}}
+          {{#unless devoured}}
+              <li>
+                <p>{{this.burger_name}}</p>
+                  <button class="devour-burger btn btn-danger text-right" data-id="{{this.id}}">DEVOUR</button>
+              </li>
+          {{/unless}}
+      {{/each}}
+    </ul>
+  <br><br><br><br>   
+</div>
+
+<div id="devouredBurgersDiv">
+  <h3>Devoured Burgers:</h3>
+    <ul>
+        {{#each burgers}}
+            {{#if devoured}}
+            <li>
+              <p>{{this.burger_name}}</p>
+            </li>
+            {{/if}}
+        {{/each}}
+    </ul>
+</div>
+  <br><br><br><br>
+
+
+
+ 
+
+<script>
+    $(".devour-burger").on("click", function(event) {
+        
+        var id = $(this).data("id");
+        $.ajax("/api/burgers/" + id, {
+            type: "PUT"
+        }).then( function() {
+            console.log("Devoured burger with ID " + id);
+            location.reload();
+        });
+    });
+    $(".add-burger").on("submit", function(event) {
+        event.preventDefault();
+        var name = $("#new-burger").val().trim();
+        var newBurger = {
+            burger_name: name
+        }
+        console.log("Attempting to create burger with name " + name);
+        $.ajax("/api/burgers/", {
+            type: "POST",
+            data: newBurger
+        }).then( function() {
+            console.log("Added new burger.");
+            location.reload();
+        });
+    });
+</script>
+
+</body>
+</html>
